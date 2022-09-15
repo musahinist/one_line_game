@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'widget/line_painter.dart';
+
 class GridBoard2DimArray extends StatefulWidget {
   const GridBoard2DimArray({Key? key}) : super(key: key);
 
@@ -14,12 +16,14 @@ class _GeoBoardGameState extends State<GridBoard2DimArray> {
   List<Offset> lineNodes = [];
   late _Grid grid;
   List<int> selectedIndexes = [];
-  double radius = 16;
+  final double radius = 8;
+  final double gridPadding = 20;
+
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    grid = _Grid(6, 6, const Size(400, 400), radius);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    double gridDimSize = MediaQuery.of(context).size.width - gridPadding * 2;
+    grid = _Grid(12, 12, Size(gridDimSize, gridDimSize), radius);
   }
 
   // List<List<int>> nearIndexes(List<int> selected) {
@@ -127,7 +131,7 @@ class _GeoBoardGameState extends State<GridBoard2DimArray> {
                           backgroundColor: Colors.blue, radius: radius),
                     ),
                 CustomPaint(
-                  painter: _LinePainter(lineNodes),
+                  painter: LinePainter(lineNodes),
                 ),
               ],
             ),
@@ -151,9 +155,9 @@ class _Grid {
           (x) => List.generate(
             col,
             (y) => _Node(
-              Offset(x * (size.width - radius * 2) / (col - 1),
-                  y * (size.height - radius * 2) / (row - 1)),
-            ),
+                Offset(x * (size.width - radius * 2) / (col - 1),
+                    y * (size.height - radius * 2) / (row - 1)),
+                radius),
           ),
         ),
         nodeSize = (size.width - radius * 2) / (col - 1);
@@ -163,28 +167,5 @@ class _Node {
   final Offset pos;
   final Offset center;
 
-  _Node(this.pos) : center = pos + const Offset(16, 16);
-}
-
-class _LinePainter extends CustomPainter {
-  final List<Offset> points;
-  _LinePainter(this.points);
-  @override
-  void paint(Canvas canvas, Size size) {
-    var paint = Paint()
-      ..strokeWidth = 5
-      ..strokeCap = StrokeCap.round;
-    if (points.length > 1) {
-      for (var i = 0; i < points.length - 1; ++i) {
-        //  paint.color = points[i].color;
-        canvas.drawLine(points[i], points[i + 1], paint);
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(_LinePainter oldDelegate) => true;
-
-  @override
-  bool shouldRebuildSemantics(_LinePainter oldDelegate) => true;
+  _Node(this.pos, double radius) : center = pos + Offset(radius, radius);
 }
