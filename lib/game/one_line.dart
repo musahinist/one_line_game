@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:one_line_game/generator/geo_board_surface.dart';
+
+import 'widget/animated_star.dart';
+import 'widget/bottom_bar.dart';
 
 class OneLine extends StatefulWidget {
-  const OneLine({Key? key}) : super(key: key);
-
+  const OneLine(
+      {Key? key, required this.templateLines, required this.onPuzzleComleted})
+      : super(key: key);
+  final VoidCallback onPuzzleComleted;
+  final List<Line> templateLines;
   @override
   State<OneLine> createState() => _GeoBoardGameState();
 }
@@ -22,41 +29,22 @@ class _GeoBoardGameState extends State<OneLine> {
     super.didChangeDependencies();
     gridEdgeSize = MediaQuery.of(context).size.width - gridPadding * 2;
 
-    templateLines = [
-      Line(
-        Offset(gridEdgeSize / 2, 100),
-        Offset(gridEdgeSize / 2 - 100, 300),
-      ),
-      Line(
-        Offset(gridEdgeSize / 2 - 100, 300),
-        Offset(gridEdgeSize / 2 + 120, 170),
-      ),
-      Line(
-        Offset(gridEdgeSize / 2 + 120, 170),
-        Offset(gridEdgeSize / 2 - 120, 170),
-      ),
-      Line(
-        Offset(gridEdgeSize / 2 - 120, 170),
-        Offset(gridEdgeSize / 2 + 100, 300),
-      ),
-      Line(
-        Offset(gridEdgeSize / 2 + 100, 300),
-        Offset(gridEdgeSize / 2, 100),
-      ),
-    ];
+    templateLines = widget.templateLines;
   }
 
   onPointerDown(PointerDownEvent event) {
     final Offset pointer = event.localPosition;
+    if (lineNodes.isNotEmpty) {
+      lineNodes.add(Line(lineNodes.last.end, lineNodes.last.end));
+      // lineNodes.last.end = pointer;
+    }
     for (var i = 0; i < templateLines.length; i++) {
       final distance = (templateLines[i].start - pointer).distance;
 
       if (distance <= radius + 10) {
         selectedIndexes = i;
 
-        if (lineNodes.isNotEmpty) {
-          // lineNodes.last.end = pointer;
-        } else {
+        if (lineNodes.isEmpty) {
           lineNodes.add(Line(templateLines[i].start, templateLines[i].start));
         }
 
@@ -98,34 +86,34 @@ class _GeoBoardGameState extends State<OneLine> {
     if (lineNodes.isNotEmpty) {
       lineNodes.removeLast();
     }
-    if (templateLines.length != lineNodes.length) {
-      lineNodes.clear();
-    } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('You win'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                lineNodes.clear();
-              },
-              child: const Text('OK'),
-            )
-          ],
-        ),
-      );
+    if (templateLines.length == lineNodes.length && !levelCompleted) {
+      widget.onPuzzleComleted();
+      levelCompleted = true;
     }
     setState(() {});
   }
 
+  bool levelCompleted = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('OneLine'),
+        leading: const Icon(Icons.star),
+        title: Column(
+          children: [
+            const Text('2/20'),
+          ],
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, GeoBoardSurface.routeName);
+              },
+              icon: const Icon(Icons.create))
+        ],
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerTop,
+      floatingActionButton: AnimatedStars(animate: levelCompleted),
       body: Center(
         child: Listener(
           onPointerDown: onPointerDown,
@@ -138,8 +126,7 @@ class _GeoBoardGameState extends State<OneLine> {
               fit: StackFit.expand,
               children: [
                 CustomPaint(
-                  painter: _LinePainter(templateLines, Colors.grey, 5,
-                      closePath: true),
+                  painter: _LinePainter(templateLines, Colors.grey, 5),
                 ),
                 for (var i = 0; i < templateLines.length; i++)
                   Positioned(
@@ -157,52 +144,16 @@ class _GeoBoardGameState extends State<OneLine> {
         ),
       ),
       persistentFooterButtons: [
-        ButtonBar(
-          alignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              onPressed: () {
-                if (lineNodes.isNotEmpty) {
-                  lineNodes.removeLast();
-                  setState(() {});
-                }
-              },
-              icon: const Icon(
-                Icons.undo,
-                color: Colors.amber,
-                size: 36,
-              ),
-              style: IconButton.styleFrom(),
-            ),
-            IconButton(
-              onPressed: () {
-                if (lineNodes.isNotEmpty) {
-                  lineNodes.clear();
-                  setState(() {});
-                }
-              },
-              icon: const Icon(
-                Icons.refresh,
-                color: Colors.amber,
-                size: 36,
-              ),
-              style: IconButton.styleFrom(),
-            ),
-            IconButton(
-              onPressed: () {
-                if (lineNodes.isNotEmpty) {
-                  //   lineNodes.removeLast();
-                  setState(() {});
-                }
-              },
-              icon: const Icon(
-                Icons.forward,
-                color: Colors.amber,
-                size: 36,
-              ),
-              style: IconButton.styleFrom(),
-            ),
-          ],
+        BottomBarWidget(
+          undo: () {
+            if (lineNodes.isNotEmpty) {
+              lineNodes.removeLast();
+            }
+          },
+          clear: () {
+            lineNodes.clear();
+          },
+          hint: () {},
         ),
       ],
     );
@@ -231,10 +182,9 @@ class Line {
 class _LinePainter extends CustomPainter {
   final List<Line> lines;
   final Color color;
-  final bool closePath;
+
   final double strokeWidth;
-  _LinePainter(this.lines, this.color, this.strokeWidth,
-      {this.closePath = false});
+  _LinePainter(this.lines, this.color, this.strokeWidth);
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
