@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AnimatedStars extends StatelessWidget {
   const AnimatedStars({Key? key, required this.animate}) : super(key: key);
@@ -30,11 +31,11 @@ class AnimatedStars extends StatelessWidget {
                 .move(
                     delay: const Duration(milliseconds: 400),
                     duration: Duration(milliseconds: i * 200),
-                    begin: const Offset(0, 80),
-                    end: const Offset(-166, -28))
+                    begin: Offset(0, 40.w),
+                    end: Offset(-156.w, -28.w))
                 .fade(
-                    delay: Duration(milliseconds: i * 300),
-                    duration: const Duration(milliseconds: 500),
+                    delay: Duration(milliseconds: i * 220),
+                    duration: const Duration(milliseconds: 300),
                     begin: 1,
                     end: animate ? 0 : 1),
       ],

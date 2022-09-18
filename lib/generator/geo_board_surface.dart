@@ -2,6 +2,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GeoBoardSurface extends StatefulWidget {
   const GeoBoardSurface({Key? key}) : super(key: key);
@@ -15,14 +16,19 @@ class _GeoBoardGameState extends State<GeoBoardSurface> {
   late _Grid grid;
   List<_Line> lines = [];
   Color selectedColor = Colors.black;
+  final double radius = 8;
+  late double width;
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    width = MediaQuery.of(context).size.width;
     grid = _Grid(
-        9,
-        9,
-        Size(MediaQuery.of(context).size.width - 20,
-            MediaQuery.of(context).size.width - 20));
+        15,
+        15,
+        Size(
+          width,
+          MediaQuery.of(context).size.height,
+        ));
   }
 
   @override
@@ -39,82 +45,104 @@ class _GeoBoardGameState extends State<GeoBoardSurface> {
           ),
         ],
       ),
-      body: Center(
-        child: Listener(
-          onPointerDown: (details) {
-            final Offset pointer = details.localPosition;
-            if (lines.isEmpty) {
-              List<List<dynamic>> distanceList = [];
-              for (var x = 0; x < grid.col; x++) {
-                for (var y = 0; y < grid.row; y++) {
-                  final distance = (grid.nodes[x][y].center - pointer).distance;
-                  if (distance < grid.nodeSize * 1.414 / 2) {
-                    distanceList.add([x, y, distance]);
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Listener(
+            onPointerDown: (details) {
+              final Offset pointer = details.localPosition;
+              if (lines.isEmpty) {
+                List<List<dynamic>> distanceList = [];
+                for (var x = 0; x < grid.row; x++) {
+                  for (var y = 0; y < grid.col; y++) {
+                    final distance = (grid.nodes[x][y].pos - pointer).distance;
+                    if (distance < grid.nodeSize * 1.414 / 2) {
+                      distanceList.add([x, y, distance]);
+                    }
                   }
+                }
+                distanceList.sort((a, b) => a[2].compareTo(b[2]));
+
+                lines.add(_Line(
+                    grid.nodes[distanceList.first[0]][distanceList.first[1]]
+                        .pos,
+                    pointer,
+                    selectedColor));
+                HapticFeedback.selectionClick();
+                setState(() {});
+              } else {
+                lines.add(_Line(lines.last.end, pointer, selectedColor));
+                setState(() {});
+              }
+            },
+            onPointerMove: (details) {
+              lines.last.end = details.localPosition;
+              setState(() {});
+            },
+            onPointerUp: (details) {
+              final Offset pointer = details.localPosition;
+              List<List<dynamic>> distanceList = [];
+              for (var x = 0; x < grid.row; x++) {
+                for (var y = 0; y < grid.col; y++) {
+                  final distance = (grid.nodes[x][y].pos - pointer).distance;
+                  distanceList.add([x, y, distance]);
                 }
               }
               distanceList.sort((a, b) => a[2].compareTo(b[2]));
-
-              lines.add(_Line(
+              if (lines.last.start ==
                   grid.nodes[distanceList.first[0]][distanceList.first[1]]
-                      .center,
-                  pointer,
-                  selectedColor));
+                      .pos) {
+                lines.removeLast();
+              } else {
+                lines.last.end = grid
+                    .nodes[distanceList.first[0]][distanceList.first[1]].pos;
+              }
+
               HapticFeedback.selectionClick();
               setState(() {});
-            } else {
-              lines.add(_Line(lines.last.end, pointer, selectedColor));
-              setState(() {});
-            }
-          },
-          onPointerMove: (details) {
-            lines.last.end = details.localPosition;
-            setState(() {});
-          },
-          onPointerUp: (details) {
-            final Offset pointer = details.localPosition;
-            List<List<dynamic>> distanceList = [];
-            for (var x = 0; x < grid.col; x++) {
-              for (var y = 0; y < grid.row; y++) {
-                final distance = (grid.nodes[x][y].center - pointer).distance;
-                distanceList.add([x, y, distance]);
-              }
-            }
-            distanceList.sort((a, b) => a[2].compareTo(b[2]));
-            if (lines.last.start ==
-                grid.nodes[distanceList.first[0]][distanceList.first[1]]
-                    .center) {
-              lines.removeLast();
-            } else {
-              lines.last.end = grid
-                  .nodes[distanceList.first[0]][distanceList.first[1]].center;
-            }
-
-            HapticFeedback.selectionClick();
-            setState(() {});
-          },
-          child: SizedBox(
-            width: grid.size.width,
-            height: grid.size.height,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                for (var x = 0; x < grid.col; x++)
-                  for (var y = 0; y < grid.row; y++)
-                    Positioned(
-                      left: grid.nodes[x][y].pos.dx,
-                      top: grid.nodes[x][y].pos.dy,
-                      child: const CircleAvatar(
-                          backgroundColor: Colors.grey, radius: 8),
-                    ),
-                CustomPaint(
-                  painter: _LinePainter(lines),
-                ),
-              ],
+            },
+            child: SizedBox(
+              width: width,
+              height: width,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  for (var x = 0; x < grid.row; x++)
+                    for (var y = 0; y < grid.col; y++)
+                      Positioned(
+                        left: grid.nodes[x][y].pos.dx - radius,
+                        top: grid.nodes[x][y].pos.dy - radius,
+                        child: CircleAvatar(
+                            backgroundColor: Colors.grey, radius: radius),
+                      ),
+                  CustomPaint(
+                    painter: _LinePainter(lines),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
+      persistentFooterButtons: [
+        ButtonBar(
+          children: [
+            IconButton(
+              onPressed: () {
+                if (lines.isNotEmpty) {
+                  lines.removeLast();
+                }
+              },
+              icon: const Icon(
+                Icons.undo,
+                color: Colors.amber,
+                size: 36,
+              ),
+              style: IconButton.styleFrom(),
+            ),
+          ],
+        )
+      ],
     );
   }
 }
@@ -132,19 +160,18 @@ class _Grid {
           (x) => List.generate(
             col,
             (y) => _Node(
-              Offset((x * (size.width - 16)) / (col - 1),
-                  y * (size.height - 16) / (row - 1)),
+              Offset((16 + (x * (size.width - 16)) / (row + 1)),
+                  (16 + (y * (size.width - 16)) / (col + 1))),
             ),
           ),
         ),
-        nodeSize = (size.width - 8) / (col - 1);
+        nodeSize = (size.width) / (col);
 }
 
 class _Node {
   final Offset pos;
-  final Offset center;
 
-  _Node(this.pos) : center = pos + const Offset(8, 8);
+  _Node(this.pos);
 }
 
 class _Line {
@@ -165,7 +192,8 @@ class _Line {
   int get hashCode => start.hashCode ^ end.hashCode ^ color.hashCode;
 
   @override
-  String toString() => 'Line( $start, $end)';
+  String toString() =>
+      'Line( Offset(${start.dx}.w,${start.dy}.w), Offset(${end.dx}.w,${end.dy}.w))';
 }
 
 class _LinePainter extends CustomPainter {

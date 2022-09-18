@@ -1,6 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:one_line_game/game/levels.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../game/game_state.dart';
+import '../game/line_panter.dart';
 
 class LevelPage extends StatefulWidget {
   const LevelPage({super.key});
@@ -15,7 +20,7 @@ class _LevelPageState extends State<LevelPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 80,
+        //  toolbarHeight: 80,
         title: const Text('Level'),
         actions: [
           Padding(
@@ -32,32 +37,44 @@ class _LevelPageState extends State<LevelPage> {
         ],
       ),
       body: GridView.builder(
-          padding: EdgeInsets.all(12),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          padding: const EdgeInsets.all(12),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
             childAspectRatio: 1,
           ),
+          itemCount: levelList.length,
           itemBuilder: (context, index) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.amber,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, GameStatePage.routeName);
-                },
-                child: Center(
-                  child: Text(
-                    '${index + 1}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
+            return InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, GameStatePage.routeName);
+              },
+              child: Column(
+                children: [
+                  Container(
+                    height: 1.sw * .36,
+                    width: 1.sw * .4,
+                    alignment: Alignment.topLeft,
+                    child: Transform.scale(
+                      scale: 0.36.w,
+                      child: CustomPaint(
+                        painter: LinePainter(
+                            levelList[index].template,
+                            Colors.primaries[
+                                Random().nextInt(Colors.primaries.length)],
+                            12),
+                      ),
                     ),
                   ),
-                ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24.w),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [Text('$index'), Icon(Icons.check)],
+                    ),
+                  )
+                ],
               ),
             );
           }),

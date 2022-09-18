@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:one_line_game/game/one_line.dart';
 
 class Level {
@@ -9,86 +11,45 @@ class Level {
   Level(this.number, this.template);
 }
 
-List<Level> levelList(double gridEdgeSize) => [
-      Level(0, templateLines0),
-      Level(1, templateLines1),
-      Level(2, templateLines2),
-      Level(3, templateLines3),
-      Level(4, templateLines4),
-      Level(5, templateLines5),
+List<Level> get levelList => [
+      Level(1, [
+        Line(Offset(39.375.w, 39.375.w), Offset(39.375.w, 319.875.w)),
+        Line(Offset(39.375.w, 319.875.w), Offset(319.875.w, 319.875.w)),
+        Line(Offset(319.875.w, 319.875.w), Offset(319.875.w, 39.375.w)),
+        Line(Offset(319.875.w, 39.375.w), Offset(39.375.w, 39.375.w))
+      ]),
+      Level(2, [
+        Line(Offset(179.625.w, 39.375.w), Offset(86.125.w, 319.875.w)),
+        Line(Offset(86.125.w, 319.875.w), Offset(319.875.w, 132.875.w)),
+        Line(Offset(319.875.w, 132.875.w), Offset(39.375.w, 132.875.w)),
+        Line(Offset(39.375.w, 132.875.w), Offset(296.5.w, 319.875.w)),
+        Line(Offset(296.5.w, 319.875.w), Offset(179.625.w, 39.375.w))
+      ]),
+      Level(3, [
+        Line(Offset(39.375.w, 319.875.w), Offset(39.375.w, 39.375.w)),
+        Line(Offset(39.375.w, 39.375.w), Offset(319.875.w, 39.375.w)),
+        Line(Offset(319.875.w, 39.375.w), Offset(319.875.w, 319.875.w)),
+        Line(Offset(319.875.w, 319.875.w), Offset(39.375.w, 319.875.w)),
+        Line(Offset(39.375.w, 319.875.w), Offset(109.5.w, 249.75.w)),
+        Line(Offset(109.5.w, 249.75.w), Offset(62.75.w, 179.625.w)),
+        Line(Offset(62.75.w, 179.625.w), Offset(296.5.w, 179.625.w)),
+        Line(Offset(296.5.w, 179.625.w), Offset(249.75.w, 249.75.w)),
+        Line(Offset(249.75.w, 249.75.w), Offset(179.625.w, 156.25.w)),
+        Line(Offset(179.625.w, 156.25.w), Offset(109.5.w, 249.75.w)),
+        Line(Offset(109.5.w, 249.75.w), Offset(249.75.w, 249.75.w)),
+        Line(Offset(249.75.w, 249.75.w), Offset(319.875.w, 319.875.w))
+      ]),
+      Level(4, [
+        Line(Offset(39.375.w, 39.375.w), Offset(39.375.w, 319.875.w)),
+        Line(Offset(39.375.w, 319.875.w), Offset(319.875.w, 319.875.w)),
+        Line(Offset(319.875.w, 319.875.w), Offset(319.875.w, 39.375.w)),
+        Line(Offset(319.875.w, 39.375.w), Offset(39.375.w, 39.375.w)),
+        Line(Offset(39.375.w, 39.375.w), Offset(132.875.w, 132.875.w)),
+        Line(Offset(132.875.w, 132.875.w), Offset(132.875.w, 249.75.w)),
+        Line(Offset(132.875.w, 249.75.w), Offset(226.375.w, 249.75.w)),
+        Line(Offset(226.375.w, 249.75.w), Offset(226.375.w, 132.875.w)),
+        Line(Offset(226.375.w, 132.875.w), Offset(132.875.w, 132.875.w)),
+        Line(Offset(132.875.w, 132.875.w), Offset(226.375.w, 249.75.w)),
+        Line(Offset(226.375.w, 249.75.w), Offset(319.875.w, 319.875.w))
+      ]),
     ];
-
-List<Line> templateLines0 = [
-  Line(const Offset(185.0, 8.0), const Offset(52.3, 362.0)),
-  Line(const Offset(52.3, 362.0), const Offset(362.0, 140.8)),
-  Line(const Offset(362.0, 140.8), const Offset(8.0, 140.8)),
-  Line(const Offset(8.0, 140.8), const Offset(317.8, 362.0)),
-  Line(const Offset(317.8, 362.0), const Offset(185.0, 8.0))
-];
-List<Line> templateLines1 = [
-  Line(const Offset(52.3, 52.3), const Offset(317.8, 52.3)),
-  Line(const Offset(317.8, 52.3), const Offset(317.8, 317.8)),
-  Line(const Offset(317.8, 317.8), const Offset(52.3, 52.3)),
-  Line(const Offset(52.3, 52.3), const Offset(52.3, 317.8)),
-  Line(const Offset(52.3, 317.8), const Offset(317.8, 52.3)),
-  Line(const Offset(317.8, 52.3), const Offset(185.0, 317.8)),
-  Line(const Offset(185.0, 317.8), const Offset(52.3, 52.3))
-];
-List<Line> templateLines2 = [
-  Line(const Offset(185.0, 52.3), const Offset(52.3, 8.0)),
-  Line(const Offset(52.3, 8.0), const Offset(52.3, 362.0)),
-  Line(const Offset(52.3, 362.0), const Offset(185.0, 317.8)),
-  Line(const Offset(185.0, 317.8), const Offset(52.3, 185.0)),
-  Line(const Offset(52.3, 185.0), const Offset(185.0, 52.3)),
-  Line(const Offset(185.0, 52.3), const Offset(317.8, 8.0)),
-  Line(const Offset(317.8, 8.0), const Offset(317.8, 362.0)),
-  Line(const Offset(317.8, 362.0), const Offset(185.0, 317.8)),
-  Line(const Offset(185.0, 317.8), const Offset(317.8, 185.0)),
-  Line(const Offset(317.8, 185.0), const Offset(185.0, 52.3))
-];
-List<Line> templateLines3 = [
-  Line(const Offset(52.3, 52.3), const Offset(185.0, 185.0)),
-  Line(const Offset(185.0, 185.0), const Offset(52.3, 317.8)),
-  Line(const Offset(52.3, 317.8), const Offset(52.3, 185.0)),
-  Line(const Offset(52.3, 185.0), const Offset(317.8, 185.0)),
-  Line(const Offset(317.8, 185.0), const Offset(317.8, 317.8)),
-  Line(const Offset(317.8, 317.8), const Offset(185.0, 185.0)),
-  Line(const Offset(185.0, 185.0), const Offset(317.8, 52.3)),
-  Line(const Offset(317.8, 52.3), const Offset(229.3, 52.3)),
-  Line(const Offset(229.3, 52.3), const Offset(185.0, 96.5)),
-  Line(const Offset(185.0, 96.5), const Offset(140.8, 52.3)),
-  Line(const Offset(140.8, 52.3), const Offset(52.3, 52.3)),
-  Line(const Offset(52.3, 52.3), const Offset(52.3, 185.0)),
-  Line(const Offset(52.3, 185.0), const Offset(185.0, 317.8)),
-  Line(const Offset(185.0, 317.8), const Offset(317.8, 185.0)),
-  Line(const Offset(317.8, 185.0), const Offset(317.8, 52.3))
-];
-List<Line> templateLines4 = [
-  Line(const Offset(52.3, 52.3), const Offset(317.8, 317.8)),
-  Line(const Offset(317.8, 317.8), const Offset(185.0, 52.3)),
-  Line(const Offset(185.0, 52.3), const Offset(52.3, 317.8)),
-  Line(const Offset(52.3, 317.8), const Offset(317.8, 52.3)),
-  Line(const Offset(317.8, 52.3), const Offset(52.3, 185.0)),
-  Line(const Offset(52.3, 185.0), const Offset(317.8, 185.0)),
-  Line(const Offset(317.8, 185.0), const Offset(52.3, 52.3)),
-  Line(const Offset(52.3, 52.3), const Offset(8.0, 185.0)),
-  Line(const Offset(8.0, 185.0), const Offset(52.3, 317.8)),
-  Line(const Offset(52.3, 317.8), const Offset(317.8, 317.8)),
-  Line(const Offset(317.8, 317.8), const Offset(362.0, 185.0)),
-  Line(const Offset(362.0, 185.0), const Offset(317.8, 52.3)),
-  Line(const Offset(317.8, 52.3), const Offset(52.3, 52.3))
-];
-List<Line> templateLines5 = [
-  Line(const Offset(140.8, 52.3), const Offset(52.3, 140.8)),
-  Line(const Offset(52.3, 140.8), const Offset(229.3, 140.8)),
-  Line(const Offset(229.3, 140.8), const Offset(317.8, 52.3)),
-  Line(const Offset(317.8, 52.3), const Offset(140.8, 52.3)),
-  Line(const Offset(140.8, 52.3), const Offset(229.3, 140.8)),
-  Line(const Offset(229.3, 140.8), const Offset(229.3, 317.8)),
-  Line(const Offset(229.3, 317.8), const Offset(317.8, 229.3)),
-  Line(const Offset(317.8, 229.3), const Offset(317.8, 52.3)),
-  Line(const Offset(317.8, 52.3), const Offset(229.3, 317.8)),
-  Line(const Offset(229.3, 317.8), const Offset(52.3, 317.8)),
-  Line(const Offset(52.3, 317.8), const Offset(52.3, 140.8)),
-  Line(const Offset(52.3, 140.8), const Offset(229.3, 317.8))
-];
