@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:one_line_game/game/levels.dart';
 import 'package:one_line_game/generator/geo_board_surface.dart';
 
+import 'line_panter.dart';
 import 'widget/animated_star.dart';
 import 'widget/bottom_bar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OneLine extends StatefulWidget {
-  const OneLine(
-      {Key? key, required this.templateLines, required this.onPuzzleComleted})
+  const OneLine({Key? key, required this.level, required this.onPuzzleComleted})
       : super(key: key);
   final VoidCallback onPuzzleComleted;
-  final List<Line> templateLines;
+  final Level level;
   @override
   State<OneLine> createState() => _GeoBoardGameState();
 }
@@ -20,7 +22,7 @@ class _GeoBoardGameState extends State<OneLine> {
   int selectedIndexes = -1;
   final double radius = 8;
 
-  final double gridPadding = 10;
+  final double gridPadding = 20;
   List<Line> templateLines = [];
   late double gridEdgeSize;
 
@@ -29,7 +31,7 @@ class _GeoBoardGameState extends State<OneLine> {
     super.didChangeDependencies();
     gridEdgeSize = MediaQuery.of(context).size.width - gridPadding * 2;
 
-    templateLines = widget.templateLines;
+    templateLines = widget.level.template;
   }
 
   onPointerDown(PointerDownEvent event) {
@@ -97,21 +99,6 @@ class _GeoBoardGameState extends State<OneLine> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const Icon(Icons.star),
-        title: Column(
-          children: [
-            const Text('2/20'),
-          ],
-        ),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, GeoBoardSurface.routeName);
-              },
-              icon: const Icon(Icons.create))
-        ],
-      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerTop,
       floatingActionButton: AnimatedStars(animate: levelCompleted),
       body: Center(
@@ -120,13 +107,14 @@ class _GeoBoardGameState extends State<OneLine> {
           onPointerMove: onPointerMove,
           onPointerUp: onPointerUp,
           child: SizedBox(
-            width: gridEdgeSize,
-            height: gridEdgeSize,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.width,
             child: Stack(
               fit: StackFit.expand,
               children: [
                 CustomPaint(
-                  painter: _LinePainter(templateLines, Colors.grey, 5),
+                  painter: LinePainter(templateLines, Colors.grey, 5,
+                      repaint: false),
                 ),
                 for (var i = 0; i < templateLines.length; i++)
                   Positioned(
@@ -136,7 +124,8 @@ class _GeoBoardGameState extends State<OneLine> {
                         backgroundColor: Colors.blue, radius: radius),
                   ),
                 CustomPaint(
-                  painter: _LinePainter(lineNodes, Colors.pink, 6),
+                  painter:
+                      LinePainter(lineNodes, Colors.pink, 6, repaint: true),
                 ),
               ],
             ),
@@ -177,27 +166,4 @@ class Line {
 
   @override
   int get hashCode => start.hashCode ^ end.hashCode;
-}
-
-class _LinePainter extends CustomPainter {
-  final List<Line> lines;
-  final Color color;
-
-  final double strokeWidth;
-  _LinePainter(this.lines, this.color, this.strokeWidth);
-  @override
-  void paint(Canvas canvas, Size size) {
-    var paint = Paint()
-      ..strokeWidth = strokeWidth
-      ..color = color
-      ..strokeCap = StrokeCap.round;
-    if (lines.isNotEmpty) {
-      for (var i = 0; i < lines.length; ++i) {
-        canvas.drawLine(lines[i].start, lines[i].end, paint);
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(_LinePainter oldDelegate) => true;
 }
