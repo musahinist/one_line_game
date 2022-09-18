@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:one_line_game/game/game_state.dart';
-import 'package:one_line_game/game/one_line.dart';
+import 'game/game_state.dart';
+import 'game/one_line.dart';
 
-import 'package:one_line_game/generator/geo_board_surface.dart';
-import 'package:one_line_game/level/level_page.dart';
+import 'generator/geo_board_surface.dart';
+import 'level/level_page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:one_line_game/game/one_line.dart';
+import 'one_line.dart';
 
 class Level {
   final int number;

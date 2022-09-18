@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:one_line_game/game/levels.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../game/game_state.dart';
+import '../game/levels.dart';
 import '../game/line_panter.dart';
 
 class LevelPage extends StatefulWidget {

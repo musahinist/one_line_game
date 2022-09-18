@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:one_line_game/game/levels.dart';
-import 'package:one_line_game/game/one_line.dart';
 
 import '../generator/geo_board_surface.dart';
 import 'level_dialog.dart';
+import 'levels.dart';
+import 'one_line.dart';
 
 class GameStatePage extends StatefulWidget {
   const GameStatePage({super.key});

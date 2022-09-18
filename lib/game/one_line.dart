@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:one_line_game/game/levels.dart';
-import 'package:one_line_game/generator/geo_board_surface.dart';
 
+import 'levels.dart';
 import 'line_panter.dart';
 import 'widget/animated_star.dart';
 import 'widget/bottom_bar.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OneLine extends StatefulWidget {
   const OneLine({Key? key, required this.level, required this.onPuzzleComleted})
