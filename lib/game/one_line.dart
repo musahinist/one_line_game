@@ -39,7 +39,7 @@ class _GeoBoardGameState extends State<OneLine> {
     final Offset pointer = event.localPosition;
     if (lineNodes.isNotEmpty) {
       lineNodes.add(Line(lineNodes.last.end, lineNodes.last.end));
-      // lineNodes.last.end = pointer;
+      return;
     }
     for (var i = 0; i < templateLines.length; i++) {
       final distance = (templateLines[i].start - pointer).distance;
