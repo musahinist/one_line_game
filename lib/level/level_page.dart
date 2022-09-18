@@ -21,7 +21,7 @@ class _LevelPageState extends State<LevelPage> {
     return Scaffold(
       appBar: AppBar(
         //  toolbarHeight: 80,
-        title: const Text('Level'),
+        title: const Text('Levels'),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -29,7 +29,7 @@ class _LevelPageState extends State<LevelPage> {
               onPressed: () {},
               icon: const Icon(
                 Icons.settings_outlined,
-                size: 36,
+                // size: 36,
               ),
               style: IconButton.styleFrom(),
             ),

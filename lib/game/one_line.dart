@@ -10,6 +10,7 @@ class OneLine extends StatefulWidget {
       : super(key: key);
   final VoidCallback onPuzzleComleted;
   final Level level;
+
   @override
   State<OneLine> createState() => _GeoBoardGameState();
 }
@@ -23,6 +24,8 @@ class _GeoBoardGameState extends State<OneLine> {
   final double gridPadding = 20;
   List<Line> templateLines = [];
   late double gridEdgeSize;
+  bool levelCompleted = false;
+  bool solvePuzzle = false;
 
   @override
   void didChangeDependencies() {
@@ -93,7 +96,6 @@ class _GeoBoardGameState extends State<OneLine> {
     setState(() {});
   }
 
-  bool levelCompleted = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,6 +112,10 @@ class _GeoBoardGameState extends State<OneLine> {
             child: Stack(
               fit: StackFit.expand,
               children: [
+                CustomPaint(
+                  painter: LinePainter(templateLines, Colors.grey, 5,
+                      repaint: false),
+                ),
                 CustomPaint(
                   painter: LinePainter(templateLines, Colors.grey, 5,
                       repaint: false),
@@ -131,16 +137,30 @@ class _GeoBoardGameState extends State<OneLine> {
         ),
       ),
       persistentFooterButtons: [
-        BottomBarWidget(
-          undo: () {
-            if (lineNodes.isNotEmpty) {
-              lineNodes.removeLast();
-            }
-          },
-          clear: () {
-            lineNodes.clear();
-          },
-          hint: () {},
+        IgnorePointer(
+          ignoring: levelCompleted || solvePuzzle,
+          child: BottomBarWidget(
+            undo: () {
+              if (lineNodes.isNotEmpty) {
+                lineNodes.removeLast();
+              }
+            },
+            clear: () {
+              lineNodes.clear();
+            },
+            hint: () async {
+              solvePuzzle = true;
+              setState(() {});
+              for (var line in templateLines) {
+                await Future.delayed(const Duration(milliseconds: 500), () {
+                  lineNodes.add(line);
+                  setState(() {});
+                });
+              }
+
+              widget.onPuzzleComleted();
+            },
+          ),
         ),
       ],
     );

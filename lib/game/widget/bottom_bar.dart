@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart';
 
 class BottomBarWidget extends StatelessWidget {
-  const BottomBarWidget(
-      {Key? key, required this.undo, required this.clear, required this.hint})
-      : super(key: key);
+  const BottomBarWidget({
+    Key? key,
+    required this.undo,
+    required this.clear,
+    required this.hint,
+  }) : super(key: key);
   final VoidCallback undo;
   final VoidCallback clear;
   final VoidCallback hint;
@@ -33,10 +37,17 @@ class BottomBarWidget extends StatelessWidget {
         ),
         IconButton(
           onPressed: hint,
-          icon: const Icon(
-            Icons.tips_and_updates_outlined,
-            color: Colors.amber,
-            size: 36,
+          icon: Badge(
+            badgeContent: Text(
+              '2',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+            child: const Icon(
+              Icons.tips_and_updates_outlined,
+              color: Colors.amber,
+              size: 36,
+            ),
           ),
           style: IconButton.styleFrom(),
         ),

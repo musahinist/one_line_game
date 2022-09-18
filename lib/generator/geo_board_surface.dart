@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -37,7 +39,7 @@ class _GeoBoardGameState extends State<GeoBoardSurface> {
           IconButton(
             icon: const Icon(Icons.print),
             onPressed: () {
-              print(lines);
+              log(lines.toString());
             },
           ),
         ],
