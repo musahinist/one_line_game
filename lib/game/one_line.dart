@@ -150,6 +150,7 @@ class _GeoBoardGameState extends State<OneLine> {
             },
             hint: () async {
               solvePuzzle = true;
+              lineNodes.clear();
               setState(() {});
               for (var line in templateLines) {
                 await Future.delayed(const Duration(milliseconds: 500), () {
