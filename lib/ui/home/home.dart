@@ -51,7 +51,7 @@ class HomePage extends StatelessWidget {
                       child: FloatingActionButton.extended(
                           heroTag: "start",
                           backgroundColor: Colors.greenAccent[400],
-                          icon: const Icon(Icons.play_arrow_outlined),
+                          icon: const Icon(Icons.sports_esports_outlined),
                           shape: const StadiumBorder(
                               side: BorderSide(color: Colors.white, width: 4)),
                           label: const Text(
